@@ -47,6 +47,7 @@ jobs:
           tags: ${{ secrets.DOCKER_USERNAME }}/infra:latest
 
   deploy:
+    if: github.ref_name == 'master'
     runs-on: ubuntu-latest
     needs: build_and_push_to_docker_hub
     steps:
@@ -58,6 +59,7 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         script: |
           cd yamdb_final
+          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/infra:latest
           sudo docker compose stop
           sudo docker compose rm web
           touch .env
